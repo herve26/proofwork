@@ -73,7 +73,7 @@ let fetch_charities = [
 
 class App extends Component {
 	state = {
-		selectedList: 1,
+		selectedList: 0,
 		isAddTaskOpen: false,
 		isCharityAddOpen: false,
 		isDrawerOpen: false,
