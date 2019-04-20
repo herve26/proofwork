@@ -73,7 +73,7 @@ let fetch_charities = [
 
 class App extends Component {
 	state = {
-		selectedList: 0,
+		selectedList: 1,
 		isAddTaskOpen: false,
 		isCharityAddOpen: false,
 		isDrawerOpen: false,
@@ -129,6 +129,7 @@ class App extends Component {
 			let rebuildReport = false;
 			let new_tasks = tasks.map((task, index) => {
 				if(task.status && task.status.value > 0){
+					task.time_percent = 0;
 					return task;
 				}
 

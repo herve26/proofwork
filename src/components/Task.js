@@ -53,8 +53,8 @@ class Task extends Component{
                 </div>
         ]
         return (
-            <Card className={classes.root} elevation={1}>
-                <LineTimer time_percent={time_percent} />
+            <Card className={classes.root} elevation={1} square>
+                {time_percent > 0 && <LineTimer time_percent={time_percent} />}
                 <CardContent className={classes.content}>
                     <Typography variant="h6" component="h4">
                         {task_desc}
