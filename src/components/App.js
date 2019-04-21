@@ -23,6 +23,10 @@ const styles = theme => ({
       paddingBottom: theme.spacing.unit * 2,
 	},
 	main: {
+		flexGrow: 1,
+		display: 'flex'
+	},
+	tasksView:{
 		flexGrow: 1
 	},
 	fab:{
@@ -40,21 +44,6 @@ const styles = theme => ({
 	toolbar: theme.mixins.toolbar
 });
 
-let fetched_tasks = [
-	{
-		description: 'Water Mellon',
-		time_limit: Date.now() + 122500,
-		pledge_amount: 4,
-		time_start: Date.now()
-	},
-	{
-		description: 'Drink More Water',
-		time_limit: Date.now() + 1442550,
-		pledge_amount: 3,
-		time_start: Date.now()
-	}
-]
-
 let status = {
 	pending: 0,
 	completed: 0,
@@ -62,6 +51,30 @@ let status = {
 }
 
 const Status_map = [{value: 0, label: 'Pending'}, {value: 1, label:'Completed'}, {value: 2, label: 'Failed'}]
+
+let fetched_tasks = [
+	{
+		description: 'Water Mellon',
+		time_limit: Date.now() + 2500,
+		pledge_amount: 4,
+		time_start: Date.now(),
+		status: Status_map[0]
+	},
+	{
+		description: 'Drink More Water',
+		time_limit: Date.now() + 1442550,
+		pledge_amount: 3,
+		time_start: Date.now(),
+		status: Status_map[1]
+	}
+]
+
+let fetTasks = []
+
+for (let i = 0; i < 20; i+=2) {
+	fetTasks.push(fetched_tasks[0]);
+	fetTasks.push(fetched_tasks[1]);
+}
 
 let fetch_charities = [
 	{
@@ -124,31 +137,7 @@ class App extends Component {
 
 	componentDidMount = async () => {
 
-		this.interval = setInterval(() => {
-			let tasks = this.state.tasks;
-			let rebuildReport = false;
-			let new_tasks = tasks.map((task, index) => {
-				if(task.status && task.status.value > 0){
-					task.time_percent = 0;
-					return task;
-				}
-
-				if((task.time_percent && task.time_percent > 100)){
-					rebuildReport = true;
-					task.status = Status_map[2]
-					return task;	
-				}
-
-				task.time_percent = timeDiff(task.time_start, task.time_limit)
-				return task;
-			})
-
-			if(rebuildReport)
-				this.setState({tasks: new_tasks}, this.buildReport)
-			else
-				this.setState({tasks: new_tasks})
-
-		}, 3000)
+		this.interval = setInterval(this.refreshTasks, 3000)
 
 		try {
 			// Get network provider and web3 instance.
@@ -187,7 +176,8 @@ class App extends Component {
 		for (let i = 0; i < taskCount; i++) {
 			tasks.push(this.parseTask(await contract.methods.showTask(i).call({from:accounts[0]})));
 		}
-		this.setState({tasks: tasks}, this.buildReport)
+		// this.setState({tasks: tasks}, this.buildReport)
+		this.setState({tasks: fetTasks}, this.buildReport)
 	}
 
 	parseTask = (task) => {
@@ -199,6 +189,32 @@ class App extends Component {
 			pledge_amount: web3.utils.fromWei(task[3].toString()),
 			status: Status_map[parseInt(task[4])]
 		}
+	}
+
+	refreshTasks = () => {
+		let tasks = this.state.tasks;
+		let rebuildReport = false;
+		let new_tasks = tasks.map((task, index) => {
+			if(task.status && task.status.value > 0){
+				task.time_percent = 0;
+				return task;
+			}
+
+			if((task.time_percent && task.time_percent > 100)){
+				rebuildReport = true;
+				task.status = Status_map[2]
+				task.time_percent = 0;
+				return task;	
+			}
+
+			task.time_percent = timeDiff(task.time_start, task.time_limit)
+			return task;
+		})
+		console.log(new_tasks)
+		if(rebuildReport)
+			this.setState({tasks: new_tasks}, this.buildReport)
+		else
+			this.setState({tasks: new_tasks})
 	}
 
 	buildReport = () => {
@@ -216,7 +232,7 @@ class App extends Component {
 			}
 		})
 
-		this.setState({tasks_status: tasks_status})
+		this.setState({tasks_status: tasks_status}, this.refreshTasks)
 
 	}
 
@@ -275,17 +291,15 @@ class App extends Component {
 
 		return (
 			<Grid className={classes.root}>
-				<AppBar className={classes.appBar}>
-					<Toolbar>
-						<Hidden smUp>
-							<IconButton aria-label="menu" onClick={this.handleMenu}>
-								{ this.state.isDrawerOpen ? <CloseIcon/> : <MenuIcon/> }
-							</IconButton>
-						</Hidden>
-						<header className="App-header">
-						</header>
-					</Toolbar>
-				</AppBar>
+			{/* <AppBar className={classes.appBar}>
+				<Toolbar>
+					<Hidden smUp>
+						<IconButton aria-label="menu" onClick={this.handleMenu}>
+							{ this.state.isDrawerOpen ? <CloseIcon/> : <MenuIcon/> }
+						</IconButton>
+					</Hidden>
+				</Toolbar>
+			</AppBar> */}
 				<DrawerMenu 
 					isDrawerOpen={this.state.isDrawerOpen} 
 					handleMenuItem={this.handleMenuItem} 
@@ -293,21 +307,33 @@ class App extends Component {
 				
 				/>
 				<main className={classes.main}>
-					<div className={classes.toolbar} />
-					{mainView[this.state.selectedList]}
+					<TasksList 
+						tasklist={this.state.tasks} 
+						charities={this.state.charities} 
+						isAddTaskOpen={this.state.isAddTaskOpen}
+						handleCloseAdd={this.handleAddTask} 
+						handleOpenAdd={this.handleAdd}
+						handleTaskCompleted={this.handleTaskCompleted}
+						className={classes.tasksView}
+					/>
+					<ReportView status={this.state.tasks_status} />
 				</main>
-				{fabShow[this.state.selectedList] && <Fab className={classes.fab} onClick={this.handleAdd}>
+				{/* {fabShow[this.state.selectedList] && <Fab className={classes.fab} onClick={this.handleAdd}>
 					<AddIcon />
-				</Fab>}
+				</Fab>} */}
 			</Grid>
 		);
 	}
 
-	handleAdd= () => {
-		let addName = 'isAddTaskOpen'
+	handleAdd= (addName) => () => {
+		// addName = 'isAddTaskOpen'
+		if(!addName)
+			return;
+
 		if(this.state.selectedList == 2){
 			addName = 'isCharityAddOpen'
 		}
+
 		this.setState({[addName]:true})
 	}
 

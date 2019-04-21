@@ -5,15 +5,14 @@ import LineTimer from './Linetimer';
 import PropTypes from 'prop-types';
 import toLocalDate from '../utils/localdate';
 
+const maxTaskWidth = 340
+
 const styles = theme => ({
     root: {
         position: 'relative',
         display: 'flex',
-        marginBottom: theme.spacing.unit * 2
-    },
-    content: {
-        flex: '1 0 auto',
-        borderRight: '1px solid red'
+        marginBottom: theme.spacing.unit * 2,
+        // maxWidth: maxTaskWidth
     },
     media: {
         margin: 'auto',
@@ -21,54 +20,56 @@ const styles = theme => ({
         marginRight: theme.spacing.unit,
         marginLeft: theme.spacing.unit
     },
-    icon: {
-        margin: theme.spacing.unit,
-        fontSize: 32
-    }, 
     doneIcon: {
         margin: theme.spacing.unit,
         fontSize: 32,
         color: 'green'
     },
     details: {
-        display: 'flex'
+        flex: '1 0 auto',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginRight: theme.spacing.unit * 6
     },
     date: {
-        marginRight: theme.spacing.unit * 2
+        marginRight: theme.spacing.unit * 4,
+        marginLeft: theme.spacing.unit * 4
+    },
+    state_indicator: {
+        minWidth: 64,
+        margin: 'auto',
+        padding: 0,
+        marginRight: theme.spacing.unit,
+        marginLeft: theme.spacing.unit
     }
 });
 
 class Task extends Component{
     render() {
         const { classes, task_desc, timeend, pledge_amn, time_percent, index, status } = this.props;
-        const statusArray = [
-                <IconButton className={classes.media} onClick={this.handleClick(index)}>
-                    <AccessTime className={classes.icon}/>
-                </IconButton>,
-                <div className={classes.media}>
-                    <DoneIcon className={classes.doneIcon}/>
-                </div>,
-                <div className={classes.media}>
-                    <ClearIcon className={classes.icon}/>
-                </div>
-        ]
+        const state_color = status.value > 0 ? (status.value == 1 ? 'green': 'red') : '';
+        const state_border = state_color ? '4px solid ' + state_color : '';
         return (
-            <Card className={classes.root} elevation={1} square>
+            <Card className={classes.root} style={{borderRight: state_border}} elevation={1} square>
                 {time_percent > 0 && <LineTimer time_percent={time_percent} />}
-                <CardContent className={classes.content}>
-                    <Typography variant="h6" component="h4">
+                <CardContent className={classes.details}>
+                    <Typography variant="h6" component="p">
                         {task_desc}
                     </Typography>
-                    <div className={classes.details}>
-                        <Typography component="p" className={classes.date}>
-                            {toLocalDate(timeend)}
-                        </Typography>
-                        <Typography>
-                            {pledge_amn} ETH
-                        </Typography>
-                    </div>
+                    <Typography component="p" className={classes.date}>
+                        {toLocalDate(timeend)}
+                    </Typography>
+                    <Typography>
+                        {pledge_amn} ETH
+                    </Typography>
                 </CardContent>
-                {statusArray[status.value]}
+                <div className={classes.state_indicator}>
+                    {status.value == 0 && 
+                    <IconButton className={classes.media} onClick={this.handleClick(index)}>
+                        <DoneIcon className={classes.doneIcon} />
+                    </IconButton>}
+                </div>
             </Card>
         )
     }

@@ -2,19 +2,21 @@ import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core';
 import PropTypes from 'prop-types';
 
-const styles = themes => ({
+const styles = theme => ({
     root:{
-        display: 'inline-block'
+        display: 'inline-block',
+        textAlign: 'center',
+        marginBottom: theme.spacing.unit * 3
     },
     label: {
         padding: 0,
         margin: 0,
         textAlign: 'center',
-        textTransform: 'uppercase',
-        fontSize: '1.4rem'
+        textTransform: 'capitalize',
+        fontSize: '1.2rem'
     },
     svgElm: {
-        marginBottom: themes.spacing.unit * 2
+        marginBottom: theme.spacing.unit
     },
     circleBackground: {
         fill: 'none',
@@ -27,7 +29,7 @@ const styles = themes => ({
         strokeLinejoin: 'round'
     },
     circleText: {
-        fontSize: '3em',
+        fontSize: '2em',
         fontWeight: 'bold',
         fill: 'red'
       }
@@ -36,7 +38,7 @@ class CircularProgress extends Component{
     render() {
         const { classes, numerator, denominator } = this.props;
         const strokeColor = 'green';
-        const sqSize = 150;
+        const sqSize = 120;
         const viewBox = `0 0 ${sqSize} ${sqSize}`;
         const strokeWidth= 10;
         const radius = (sqSize - strokeWidth) / 2;

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { withStyles } from '@material-ui/core';
+import { withStyles, Fab, Button } from '@material-ui/core';
+import { Add as AddIcon } from "@material-ui/icons";
 import PropTypes from 'prop-types';
 import Task from './Task';
 import AddTask from './AddTask';
@@ -9,12 +10,29 @@ const styles = theme => ({
       ...theme.mixins.gutters(),
       paddingTop: theme.spacing.unit * 2,
       paddingBottom: theme.spacing.unit * 2,
+      flexGrow: 1,
+    //   border: '1px solid red',
+    //   borderRight: '2px solid gray'
     },
+    addButton: {
+        borderRadius: 0,
+        boxShadow: 'none',
+    },
+    addIcon: {
+        marginLeft: theme.spacing.unit
+    },
+    taskList: {
+        marginTop: theme.spacing.unit * 2,
+        // border: '1px solid blue'
+    }
 });
 
 class TasksList extends Component{
+    state = {
+        isAddTaskOpen: false
+    }
     render(){
-        let {tasklist, handleCloseAdd, charities, isAddTaskOpen, handleTaskCompleted} = this.props;
+        let {classes, tasklist, handleCloseAdd, handleOpenAdd, charities, isAddTaskOpen, handleTaskCompleted} = this.props;
         let tasks = tasklist.map((task, index) => 
             <Task 
                 key={index} 
@@ -28,8 +46,14 @@ class TasksList extends Component{
             />
         );
         return(
-            <div className={this.props.classes.root}>
-                {tasks}
+            <div className={classes.root}>
+                <Button className={classes.addButton} onClick={handleOpenAdd('isAddTaskOpen')} variant="contained" color="primary">
+                    Add Task
+                    <AddIcon/>
+                </Button>
+                <div className={classes.taskList}>
+                    {tasks}
+                </div>
                 <AddTask open={isAddTaskOpen} close={handleCloseAdd} charities={charities} />
             </div>
         )

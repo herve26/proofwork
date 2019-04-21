@@ -51,7 +51,7 @@ class AddTask extends Component{
         const { open, fullScreen, classes, charities } = this.props;
         return (
             <Dialog open={open} fullScreen={fullScreen}>
-                <DialogTitle>Hello World</DialogTitle>
+                <DialogTitle>Add New Task</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
