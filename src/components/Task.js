@@ -5,13 +5,16 @@ import LineTimer from './Linetimer';
 import PropTypes from 'prop-types';
 import toLocalDate from '../utils/localdate';
 
-const maxTaskWidth = 340
+const maxTaskWidth = '50%'
+const primaryPalette = 100
 
 const styles = theme => ({
     root: {
         position: 'relative',
         display: 'flex',
         marginBottom: theme.spacing.unit * 2,
+        boxShadow: 'none',
+        border: '1px solid rgba(0,0,0,0.07)'
         // maxWidth: maxTaskWidth
     },
     media: {
@@ -47,15 +50,19 @@ const styles = theme => ({
 
 class Task extends Component{
     render() {
-        const { classes, task_desc, timeend, pledge_amn, time_percent, index, status } = this.props;
+        const { classes, task_desc, timeend, timestart, pledge_amn, time_percent, index, status } = this.props;
         const state_color = status.value > 0 ? (status.value == 1 ? 'green': 'red') : '';
         const state_border = state_color ? '4px solid ' + state_color : '';
+        console.log(timestart)
         return (
             <Card className={classes.root} style={{borderRight: state_border}} elevation={1} square>
                 {time_percent > 0 && <LineTimer time_percent={time_percent} />}
                 <CardContent className={classes.details}>
                     <Typography variant="h6" component="p">
                         {task_desc}
+                    </Typography>
+                    <Typography component="p" className={classes.date}>
+                        {toLocalDate(timestart)}
                     </Typography>
                     <Typography component="p" className={classes.date}>
                         {toLocalDate(timeend)}

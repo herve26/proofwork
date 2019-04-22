@@ -38,6 +38,7 @@ class TasksList extends Component{
                 key={index} 
                 task_desc={task.description} 
                 timeend={task.time_limit} 
+                timestart={task.time_start}
                 pledge_amn={task.pledge_amount} 
                 time_percent={task.time_percent}
                 index={index}

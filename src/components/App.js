@@ -24,7 +24,9 @@ const styles = theme => ({
 	},
 	main: {
 		flexGrow: 1,
-		display: 'flex'
+		display: 'flex',
+		// marginLeft: theme.spacing.unit * 2,
+		// border: '1px solid red'
 	},
 	tasksView:{
 		flexGrow: 1
@@ -300,12 +302,12 @@ class App extends Component {
 					</Hidden>
 				</Toolbar>
 			</AppBar> */}
-				<DrawerMenu 
+				{/* <DrawerMenu 
 					isDrawerOpen={this.state.isDrawerOpen} 
 					handleMenuItem={this.handleMenuItem} 
 					selectedList={this.state.selectedList} 
 				
-				/>
+				/> */}
 				<main className={classes.main}>
 					<TasksList 
 						tasklist={this.state.tasks} 
@@ -318,7 +320,16 @@ class App extends Component {
 					/>
 					<ReportView status={this.state.tasks_status} />
 				</main>
-				{/* {fabShow[this.state.selectedList] && <Fab className={classes.fab} onClick={this.handleAdd}>
+				{/* <CharityView 
+					charities={this.state.charities} 
+					openAdd={this.state.isCharityAddOpen} 
+					handleCharityAdd={this.handleCharityAdd}
+					isAddress={isAddress}
+					isowner={this.state.isowner}
+					tasksToPay={this.state.topayTask.userid.length}
+					handlePayToCharity={this.handlePayCharity} 
+				/> */}
+				{/* {fabShow[this.state.selectedList] && <Fab className={classes.fab} onClick={this.handleAdd('isCharityAddOpen')}>
 					<AddIcon />
 				</Fab>} */}
 			</Grid>
@@ -330,10 +341,10 @@ class App extends Component {
 		if(!addName)
 			return;
 
-		if(this.state.selectedList == 2){
-			addName = 'isCharityAddOpen'
-		}
-
+		// if(this.state.selectedList == 2){
+		// 	addName = 'isCharityAddOpen'
+		// }
+		console.log(this.state.selectedList)
 		this.setState({[addName]:true})
 	}
 
