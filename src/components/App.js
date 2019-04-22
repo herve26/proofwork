@@ -7,6 +7,7 @@ import AddTask from './AddTask';
 import ReportView from './ReportView';
 import CharityView from './CharityView';
 import DrawerMenu from './DrawerMenu';
+import Header from './Header';
 import timeDiff from '../utils/timeDiff';
 import getWeb3 from '../utils/getWeb3';
 import toLocalDate from '../utils/localdate';
@@ -18,7 +19,7 @@ const appBarHeight = 8
 const styles = theme => ({
     root: {
 	  ...theme.mixins.gutters(),
-	  display: 'flex',
+	//   display: 'flex',
       paddingTop: theme.spacing.unit * 2,
       paddingBottom: theme.spacing.unit * 2,
 	},
@@ -212,7 +213,6 @@ class App extends Component {
 			task.time_percent = timeDiff(task.time_start, task.time_limit)
 			return task;
 		})
-		console.log(new_tasks)
 		if(rebuildReport)
 			this.setState({tasks: new_tasks}, this.buildReport)
 		else
@@ -270,27 +270,10 @@ class App extends Component {
 		const { classes } = this.props;
 		// const { isAddress } = this.state.web3.utils
 		const { accounts } = this.state
+		const account = accounts ? accounts[0] : accounts
 		const fabShow = {0:true, 1: false, 2: this.state.isowner}
 		const isAddress = this.state.web3 ? this.state.web3.utils.isAddress : null
-		const mainView = [
-							<TasksList 
-								tasklist={this.state.tasks} 
-								charities={this.state.charities} 
-								isAddTaskOpen={this.state.isAddTaskOpen}
-								handleCloseAdd={this.handleAddTask} 
-								handleTaskCompleted={this.handleTaskCompleted}
-							/>, 
-							<ReportView status={this.state.tasks_status} />,
-							<CharityView 
-								charities={this.state.charities} 
-								openAdd={this.state.isCharityAddOpen} 
-								handleCharityAdd={this.handleCharityAdd}
-								isAddress={isAddress}
-								isowner={this.state.isowner}
-								tasksToPay={this.state.topayTask.userid.length}
-								handlePayToCharity={this.handlePayCharity} />
-						]
-
+		console.log( account)
 		return (
 			<Grid className={classes.root}>
 			{/* <AppBar className={classes.appBar}>
@@ -308,6 +291,7 @@ class App extends Component {
 					selectedList={this.state.selectedList} 
 				
 				/> */}
+				<Header address={account} openCharity={this.handleCharityOpen} />
 				<main className={classes.main}>
 					<TasksList 
 						tasklist={this.state.tasks} 
@@ -320,7 +304,7 @@ class App extends Component {
 					/>
 					<ReportView status={this.state.tasks_status} />
 				</main>
-				{/* <CharityView 
+				<CharityView 
 					charities={this.state.charities} 
 					openAdd={this.state.isCharityAddOpen} 
 					handleCharityAdd={this.handleCharityAdd}
@@ -328,7 +312,7 @@ class App extends Component {
 					isowner={this.state.isowner}
 					tasksToPay={this.state.topayTask.userid.length}
 					handlePayToCharity={this.handlePayCharity} 
-				/> */}
+				/>
 				{/* {fabShow[this.state.selectedList] && <Fab className={classes.fab} onClick={this.handleAdd('isCharityAddOpen')}>
 					<AddIcon />
 				</Fab>} */}
@@ -380,7 +364,11 @@ class App extends Component {
 			}
 		}
 		this.setState({isCharityAddOpen: false})
-    }
+	}
+	
+	handleCharityOpen = () => {
+		console.log('open')
+	}
 
 	handleTaskCompleted = async (index) => {
 		// TODO: wrap the function in a try
