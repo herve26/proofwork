@@ -176,8 +176,8 @@ class App extends Component {
 		for (let i = 0; i < taskCount; i++) {
 			tasks.push(this.parseTask(await contract.methods.showTask(i).call({from:accounts[0]})));
 		}
-		// this.setState({tasks: tasks}, this.buildReport)
-		this.setState({tasks: fetTasks}, this.buildReport)
+		this.setState({tasks: tasks}, this.buildReport)
+		// this.setState({tasks: fetTasks}, this.buildReport)
 	}
 
 	parseTask = (task) => {
