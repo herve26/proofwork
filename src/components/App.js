@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
-import {Grid, Fab, withStyles, AppBar, Toolbar, IconButton, Hidden } from '@material-ui/core';
-import { Add as AddIcon, Menu as MenuIcon, Close as CloseIcon } from '@material-ui/icons';
+import { Grid, withStyles } from '@material-ui/core';
+import { connect } from "react-redux";
 import PropTypes from 'prop-types';
 import TasksList from './TasksList';
-import AddTask from './AddTask';
 import ReportView from './ReportView';
 import CharityView from './CharityView';
-import DrawerMenu from './DrawerMenu';
 import Header from './Header';
 import timeDiff from '../utils/timeDiff';
 import getWeb3 from '../utils/getWeb3';
-import toLocalDate from '../utils/localdate';
 import TasksContract from "../contracts/Tasks.json";
+import { web3Connect } from '../Store/actions/web3Action';
 // import './App.css';
+
 
 const appBarHeight = 8
 
@@ -141,6 +140,7 @@ class App extends Component {
 	componentDidMount = async () => {
 
 		this.interval = setInterval(this.refreshTasks, 3000)
+		this.props.web3Connect();
 
 		try {
 			// Get network provider and web3 instance.
@@ -391,4 +391,6 @@ App.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(App);
+// const ConnectedApp = connect(null, { web3Connect })(App); 
+
+export default connect(null, {web3Connect})(withStyles(styles)(App));
