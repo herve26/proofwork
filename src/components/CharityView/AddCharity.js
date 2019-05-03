@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
-import { withStyles, Dialog, DialogContent, TextField, DialogActions, Button, Card, CardContent, CardActions, Paper } from "@material-ui/core";
-
+import { withStyles } from "@material-ui/core";
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import CardContent from '@material-ui/core/CardContent';
+import CardActions from '@material-ui/core/CardActions';
 const styles = themes => ({
     root: {
         color: 'red'

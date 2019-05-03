@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
-import { withStyles, withMobileDialog, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button, MenuItem } from '@material-ui/core';
+import { withStyles } from '@material-ui/core';
+import withMobileDialog from '@material-ui/core/withMobileDialog';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogActions from '@material-ui/core/DialogActions';
+import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
+import MenuItem from '@material-ui/core/MenuItem';
 import PropTypes from 'prop-types';
 import toUnixTime from '../../utils/toUnixTime';
 import timeDiff from '../../utils/timeDiff';

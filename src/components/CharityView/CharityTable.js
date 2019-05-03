@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
-import { withStyles, Table, TableHead, TableRow, TableCell, TableBody, Typography, Card, CardContent } from "@material-ui/core";
+import { withStyles } from "@material-ui/core";
+import Table from '@material-ui/core/Table';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import TableCell from '@material-ui/core/TableCell';
+import TableBody from '@material-ui/core/TableBody';
+import Typography from '@material-ui/core/Typography';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
 import PropTypes from "prop-types";
 
 const styles = theme => ({

@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
-import { withStyles, Card, CardContent, CardActions, Modal, ClickAwayListener } from "@material-ui/core";
+import { withStyles } from "@material-ui/core";
+import Card from '@material-ui/core/Card';
+import Modal from '@material-ui/core/Modal';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import PropTypes from 'prop-types';
 import AddCharity from "./AddCharity";
 import CharityTable from "./CharityTable";

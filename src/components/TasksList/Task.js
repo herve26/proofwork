@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
-import { Card, CardContent, Typography, withStyles, IconButton } from '@material-ui/core';
-import { AccessTime, Done as DoneIcon, Clear as ClearIcon } from '@material-ui/icons';
+import { withStyles } from '@material-ui/core';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import DoneIcon from '@material-ui/icons/Done';
 import LineTimer from './Linetimer';
 import PropTypes from 'prop-types';
 import toLocalDate from '../../utils/localdate';

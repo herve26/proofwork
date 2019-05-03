@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropType from 'prop-types';
-import { withStyles, Table, TableHead, TableRow, TableBody, TableCell } from '@material-ui/core';
+import { withStyles } from '@material-ui/core';
 import CircularProgress from "./CircularProgress";
 
 const margin_factor = 4

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Grid, withStyles } from '@material-ui/core';
+import { withStyles } from '@material-ui/core';
+import Grid from '@material-ui/core/Grid';
 import { connect } from "react-redux";
 import PropTypes from 'prop-types';
 import TasksList from './TasksList';
