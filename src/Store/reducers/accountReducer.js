@@ -1,4 +1,4 @@
-import { WEB3CONNECT } from "../actions/types";
+import { GET_ACCOUNT } from "../actions/types";
 
 const initialState = {
     instance: null
@@ -6,7 +6,7 @@ const initialState = {
 
 export default function( state = initialState, action) {
     switch(action.type) {
-        case WEB3CONNECT:
+        case GET_ACCOUNT:
             return {
                 ...state,
                 instance: action.payload

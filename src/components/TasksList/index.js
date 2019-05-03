@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { withStyles, Fab, Button } from '@material-ui/core';
+import { withStyles, Button } from '@material-ui/core';
 import { Add as AddIcon } from "@material-ui/icons";
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -30,14 +30,15 @@ const styles = theme => ({
 });
 
 class TasksList extends Component{
-
-    componentDidMount(){
-        this.props.fetchTasks();
-    }
-
     render(){
         let {classes, tasklist, handleCloseAdd, handleOpenAdd, charities, isAddTaskOpen, handleTaskCompleted} = this.props;
-        console.log(this.props.tasks)
+        if(this.props.web3 && 
+            this.props.account && 
+            this.props.contract &&
+            !(this.props.tasks.length > 0)
+        ){
+            this.props.fetchTasks(this.props.account, this.props.contract);
+        }
         let tasks = this.props.tasks.map((task, index) => 
             <Task 
                 key={index} 
@@ -71,7 +72,10 @@ TasksList.propTypes = {
 };
 
 const mapStateToProps = state => ({
-    tasks: state.tasks.items
+    tasks: state.tasks.items,
+    web3: state.web3.instance,
+    account: state.account.instance,
+    contract: state.contract.instance
 })
 
 const StyledTaskList = withStyles(styles)(TasksList);

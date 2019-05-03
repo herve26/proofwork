@@ -21,6 +21,19 @@ let fetched_tasks = [
 ]
 
 
-export const fetchTasks = () => dispatch => {
-    return dispatch({type: FETCH_TASKS, payload: fetched_tasks})   
+// const { accounts, contract, web3 } = this.state;
+// let taskCount = parseInt(await contract.methods.Pledgers(accounts[0]).call({from: accounts[0]}))
+// const tasks = []
+// for (let i = 0; i < taskCount; i++) {
+// 	tasks.push(this.parseTask(await contract.methods.showTask(i).call({from:accounts[0]})));
+// }
+// this.setState({tasks: tasks}, this.buildReport)
+
+export const fetchTasks = (account, contract) => async dispatch => {
+	const taskCount = parseInt(await contract.methods.Pledgers(account[0]).call({from: account[0]}))
+	const tasks = []
+	for(let i=0; i < taskCount; i++){
+		tasks.push(await contract.methods.showTask(i).call({from: account[0]}))
+	}
+    dispatch({type: FETCH_TASKS, payload: tasks})   
 }

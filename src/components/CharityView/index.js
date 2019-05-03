@@ -28,7 +28,7 @@ class CharityView extends Component{
     render() {
         const { classes, charities, openAdd, handleClose, handleCharityAdd, isAddress, isowner, tasksToPay, handlePayToCharity } = this.props
         const payCard = isowner && tasksToPay >= 0;
-        console.log(openAdd)
+        // console.log(openAdd)
         
         return(
             

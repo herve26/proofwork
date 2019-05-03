@@ -10,6 +10,8 @@ import timeDiff from '../utils/timeDiff';
 import getWeb3 from '../utils/getWeb3';
 import TasksContract from "../contracts/Tasks.json";
 import { web3Connect } from '../Store/actions/web3Action';
+import { getAccount } from "../Store/actions/accountAction";
+import { getContract } from "../Store/actions/contractAction";
 // import './App.css';
 
 
@@ -87,19 +89,32 @@ let fetch_charities = [
 
 
 class App extends Component {
-	state = {
-		selectedList: 0,
-		isAddTaskOpen: false,
-		isCharityAddOpen: false,
-		isDrawerOpen: false,
-		tasks: [],
-		web3: null, 
-		accounts: null, 
-		contract: null,
-		charities: [],
-		isowner: false,
-		topayTask: {userid: [], taskid: []},
-		tasks_status: status
+	constructor(props){
+		super(props)
+		this.state = {
+			selectedList: 0,
+			isAddTaskOpen: false,
+			isCharityAddOpen: false,
+			isDrawerOpen: false,
+			tasks: [],
+			web3: null, 
+			accounts: null, 
+			contract: null,
+			charities: [],
+			isowner: false,
+			topayTask: {userid: [], taskid: []},
+			tasks_status: status
+		}
+		this.initializeContract()
+		
+	}
+
+	initializeContract = async () => {
+		await this.props.web3Connect();
+		console.log(this.props.web3)
+		this.props.getAccount(this.props.web3)
+		console.log(this.props.account)
+		this.props.getContract(this.props.web3)
 	}
 
 	getFailedList =  async () => {
@@ -109,14 +124,14 @@ class App extends Component {
 		// console.log(arr, groups)
 		try{
 			let usersLen = parseInt(await contract.methods.getUsersLength().call({from:accounts[0]}))
-			console.log(usersLen)
+			// console.log(usersLen)
 			let taskpay = {userid:[], taskid:[]}
 			for (let i = 0; i < usersLen; i++) {
 				let pledgerLen = parseInt(await contract.methods.getUserTasksLength(i).call({from:accounts[0]}))
-				console.log(pledgerLen)
+				// console.log(pledgerLen)
 				for (let j = 0; j < pledgerLen; j++) {
 					let task_state = await contract.methods.isTaskStateFailed(i, j, Date.now()).call({from:accounts[0]})
-					console.log(task_state)
+					// console.log(task_state)
 					if(task_state){
 						taskpay.userid.push(i)
 						taskpay.taskid.push(j)
@@ -139,9 +154,8 @@ class App extends Component {
 
 	componentDidMount = async () => {
 
-		this.interval = setInterval(this.refreshTasks, 3000)
-		this.props.web3Connect();
-
+		// this.interval = setInterval(this.refreshTasks, 3000)
+		
 		try {
 			// Get network provider and web3 instance.
 			const web3 = await getWeb3();
@@ -162,7 +176,7 @@ class App extends Component {
 			this.checkOwner()
 			this.getFailedList()
 			this.fetchCharities()
-			console.log(this.state)
+			// console.log(this.state)
 		} catch (error) {
 			// Catch any errors for any of the above operations.
 			alert(
@@ -269,6 +283,9 @@ class App extends Component {
 	render() {
 		const { classes } = this.props;
 		// const { isAddress } = this.state.web3.utils
+		// console.log(this.props.web3)
+		console.log(this.props.account)
+		// console.log(this.props.contract)
 		const { accounts, tasks_status } = this.state
 		const account = accounts ? accounts[0] : accounts
 		const fabShow = {0:true, 1: false, 2: this.state.isowner}
@@ -391,6 +408,16 @@ App.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
+const mapStateToProps = state => ({
+	web3: state.web3.instance,
+	account: state.account.instance,
+	contract: state.contract.instance
+})
+
+const mapDispatchToProps = (dispatch) => ({
+	web3Connect: dispatch(web3Connect),
+	getAccount: web3 => getAccount(web3)
+})
 // const ConnectedApp = connect(null, { web3Connect })(App); 
 
-export default connect(null, {web3Connect})(withStyles(styles)(App));
+export default connect(mapStateToProps, {web3Connect, getAccount, getContract })(withStyles(styles)(App));
