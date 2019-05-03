@@ -28,6 +28,9 @@ const styles = theme => ({
         fontSize: 32,
         color: 'green'
     },
+    desc: {
+        width: '25%'
+    },
     details: {
         flex: '1 0 auto',
         display: 'flex',
@@ -58,7 +61,7 @@ class Task extends Component{
             <Card className={classes.root} style={{borderRight: state_border}} elevation={1} square>
                 {time_percent > 0 && <LineTimer time_percent={time_percent} />}
                 <CardContent className={classes.details}>
-                    <Typography variant="h6" component="p">
+                    <Typography variant="h6" component="p" className={classes.desc}>
                         {task_desc}
                     </Typography>
                     <Typography component="p" className={classes.date}>

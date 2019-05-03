@@ -6,10 +6,13 @@ const styles = theme => ({
     root: {
         color: 'red',
         marginLeft: theme.spacing.unit * 3,
-        marginBottom: theme.spacing.unit, 
+        marginBottom: theme.spacing.unit * 5, 
         display: 'flex',
         alignItems: 'center',
-        border: '1px solid red'
+        textAlign: 'right',
+        justifyContent: 'space-between',
+        padding: theme.spacing.unit,
+        borderBottom: '4px solid red'
     }
 })
 
@@ -19,7 +22,7 @@ class Header extends Component {
         return (
             <div className={classes.root}>
                 <Typography>{address}</Typography>
-                <Button color="secondary" onClick={openCharity}>Support Charities</Button>
+                <Button color="primary" onClick={openCharity}>Support Charities</Button>
             </div>
         )
     }

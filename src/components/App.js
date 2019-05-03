@@ -25,7 +25,7 @@ const styles = theme => ({
 	},
 	main: {
 		flexGrow: 1,
-		display: 'flex',
+		// display: 'flex',
 		// marginLeft: theme.spacing.unit * 2,
 		// border: '1px solid red'
 	},
@@ -269,30 +269,16 @@ class App extends Component {
 	render() {
 		const { classes } = this.props;
 		// const { isAddress } = this.state.web3.utils
-		const { accounts } = this.state
+		const { accounts, tasks_status } = this.state
 		const account = accounts ? accounts[0] : accounts
 		const fabShow = {0:true, 1: false, 2: this.state.isowner}
 		const isAddress = this.state.web3 ? this.state.web3.utils.isAddress : null
-		console.log( account)
+		const asStatus = (tasks_status.completed > 0 || tasks_status.failed > 0 || tasks_status.pending > 0) ? true : false;  
 		return (
 			<Grid className={classes.root}>
-			{/* <AppBar className={classes.appBar}>
-				<Toolbar>
-					<Hidden smUp>
-						<IconButton aria-label="menu" onClick={this.handleMenu}>
-							{ this.state.isDrawerOpen ? <CloseIcon/> : <MenuIcon/> }
-						</IconButton>
-					</Hidden>
-				</Toolbar>
-			</AppBar> */}
-				{/* <DrawerMenu 
-					isDrawerOpen={this.state.isDrawerOpen} 
-					handleMenuItem={this.handleMenuItem} 
-					selectedList={this.state.selectedList} 
-				
-				/> */}
 				<Header address={account} openCharity={this.handleCharityOpen} />
 				<main className={classes.main}>
+				{asStatus > 0 && <ReportView status={this.state.tasks_status} />}
 					<TasksList 
 						tasklist={this.state.tasks} 
 						charities={this.state.charities} 
@@ -302,7 +288,6 @@ class App extends Component {
 						handleTaskCompleted={this.handleTaskCompleted}
 						className={classes.tasksView}
 					/>
-					<ReportView status={this.state.tasks_status} />
 				</main>
 				<CharityView 
 					charities={this.state.charities} 
@@ -312,10 +297,8 @@ class App extends Component {
 					isowner={this.state.isowner}
 					tasksToPay={this.state.topayTask.userid.length}
 					handlePayToCharity={this.handlePayCharity} 
+					handleClose={this.handleCharityClose}
 				/>
-				{/* {fabShow[this.state.selectedList] && <Fab className={classes.fab} onClick={this.handleAdd('isCharityAddOpen')}>
-					<AddIcon />
-				</Fab>} */}
 			</Grid>
 		);
 	}
@@ -363,11 +346,17 @@ class App extends Component {
 				contract.methods.addCharity(charity.name, charity.address).send({from: accounts[0]})
 			}
 		}
-		this.setState({isCharityAddOpen: false})
+		// this.setState({isCharityAddOpen: false})
 	}
 	
 	handleCharityOpen = () => {
 		console.log('open')
+		this.setState({isCharityAddOpen: true})
+	}
+
+	handleCharityClose = () => {
+		console.log('close charity')
+		this.setState({isCharityAddOpen: false})
 	}
 
 	handleTaskCompleted = async (index) => {

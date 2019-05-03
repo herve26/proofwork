@@ -38,9 +38,9 @@ class CircularProgress extends Component{
     render() {
         const { classes, numerator, denominator } = this.props;
         const strokeColor = 'green';
-        const sqSize = 120;
+        const sqSize = 180;
         const viewBox = `0 0 ${sqSize} ${sqSize}`;
-        const strokeWidth= 10;
+        const strokeWidth = 12;
         const radius = (sqSize - strokeWidth) / 2;
         const dashArray = radius * Math.PI * 2;
         const dashOffset = dashArray - dashArray * (numerator/ denominator);

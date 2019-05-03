@@ -8,18 +8,14 @@ const sideWidth = 120
 
 const styles = theme => ({
     root:{
-        position: 'relative',
-        minWidth: sideWidth,
-        marginLeft: theme.spacing.unit * margin_factor,
-        marginRight: theme.spacing.unit * margin_factor,
-        marginTop: theme.spacing.unit * margin_factor * 2,
+        marginLeft: theme.spacing.unit * 3,
+        marginBottom: theme.spacing.unit * 5,
+        display: 'flex',
+        justifyContent: 'space-between',
         // border: '1px solid red'
     },
     fixedSide: {
-        display: 'flex',
-        flexDirection: 'column',
-        position: 'fixed',
-        // border: '1px solid green'
+        border: '1px solid green'
     },
     number:{
         textAlign: 'right'
@@ -32,11 +28,9 @@ class ReportView extends Component{
         const status_total = status.pending + status.completed + status.failed;
         return (
             <div className={classes.root}>
-                <div className={classes.fixedSide}>
-                    <CircularProgress numerator={status.pending} denominator={status_total}>Pending</CircularProgress>
-                    <CircularProgress numerator={status.completed} denominator={status_total}>Completed</CircularProgress>
-                    <CircularProgress numerator={status.failed} denominator={status_total}>Failed</CircularProgress>
-                </div>
+                <CircularProgress numerator={status.pending} denominator={status_total}>Pending</CircularProgress>
+                <CircularProgress numerator={status.completed} denominator={status_total}>Completed</CircularProgress>
+                <CircularProgress numerator={status.failed} denominator={status_total}>Failed</CircularProgress>
             </div>
         )
     }

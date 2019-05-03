@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import { withStyles, Dialog, DialogContent, TextField, DialogActions, Button } from "@material-ui/core";
+import { withStyles, Dialog, DialogContent, TextField, DialogActions, Button, Card, CardContent, CardActions, Paper } from "@material-ui/core";
 
 const styles = themes => ({
     root: {
         color: 'red'
+    },
+    action: {
+        border: '1px solid red'
     }
 })
 
@@ -14,12 +17,13 @@ class AddCharity extends Component {
     }
 
     render() {
-        const { classes, open } = this.props
+        const { classes, open, isowner } = this.props
         return (
-            <Dialog open={open} >
-                <DialogContent>
+            <React.Fragment>
+            {isowner && <div >
+                <CardContent>
                     <TextField
-                        label="Name of Organization"
+                        label="Name"
                         type="text"
                         id="charity_name"
                         fullWidth
@@ -27,23 +31,21 @@ class AddCharity extends Component {
                         onChange={this.handleChange('name')}
                     />
                     <TextField
-                        label="Ethereum Address of Organization"
+                        label="Address"
                         type="text"
                         id="chairty_address"
                         fullWidth
                         value={this.state.address}
                         onChange={this.handleChange('address')}
                     />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={this.handleCloseAdd} color="primary">
+                </CardContent>
+                <CardActions>
+                    <Button onClick={this.handleCloseAdd} color="primary" fullWidth>
                         Add Charity
                     </Button>
-                    <Button onClick={this.handleCloseCancel} color="primary">
-                        Cancel
-                    </Button>
-                </DialogActions>
-            </Dialog>
+                </CardActions>
+            </div>}
+            </React.Fragment>
         )
     }
 
