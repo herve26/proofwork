@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button';
 import AddIcon from "@material-ui/icons/Add";
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { fetchTasks } from '../../Store/actions/tasksAction';
+import { fetchTasks, updateTasksTime, updateTasksStatus } from '../../Store/actions/tasksAction';
 import Task from './Task';
 import AddTask from './AddTask';
 
@@ -39,34 +39,38 @@ class TasksList extends Component{
         return (Date.now() - start_date) * 100 / (end_date - start_date);
     }
 
-    componentDidMount() {
-        // this.interval = setTimeout(t)
+    componentWillUnmount() {
+        console.log('it is unmonting the f')
+        this.cancelUpdate()
     }
 
     render() {
-        let {classes, tasklist, handleCloseAdd, handleOpenAdd, charities, isAddTaskOpen, handleTaskCompleted} = this.props;
-        if(this.props.web3 && 
-            this.props.account && 
+        let {classes, handleCloseAdd, handleOpenAdd, charities, isAddTaskOpen, handleTaskCompleted} = this.props;
+        if(this.props.web3 &&
+            this.props.account &&
             this.props.contract &&
             !(this.props.tasks.length > 0)
         ){
             this.props.fetchTasks(this.props.account, this.props.contract);
-            console.log(this.props.tasks)
         }
+
+        if(this.props.tasks.length > 0 && !this.props.isUpdating){
+            this.cancelUpdate = this.props.updateTasksTime(this.props.tasks)
+            this.props.updateTasksStatus()
+        }
+
+        console.log(this.props.tasks)
+        console.log(this.props.status)
         let percents = []
         let tasks = this.props.tasks.map((task, index) => {
-            // console.log(this.timeDiff(task.time_start, task.time_limit) > )
-            let percent = this.timeDiff(task.time_start, task.time_limit);
-            percent = percent < 100 ? percent : 0;
-            percents.push(percent)
             return (
-                    <Task 
-                        key={index} 
-                        task_desc={task.description} 
-                        timeend={task.time_limit} 
+                    <Task
+                        key={index}
+                        task_desc={task.description}
+                        timeend={task.time_limit}
                         timestart={task.time_start}
-                        pledge_amn={task.pledge_amount} 
-                        time_percent={percent}
+                        pledge_amn={task.pledge_amount}
+                        time_percent={task.time_percent}
                         index={index}
                         handleTaskCompleted={handleTaskCompleted}
                         status={task.status}
@@ -96,11 +100,13 @@ TasksList.propTypes = {
 
 const mapStateToProps = state => ({
     tasks: state.tasks.items,
+    isUpdating: state.tasks.isUpdatingTasks,
     web3: state.web3.instance,
     account: state.account.instance,
-    contract: state.contract.instance
+    contract: state.contract.instance,
+    status: state.tasks.status
 })
 
 const StyledTaskList = withStyles(styles)(TasksList);
 
-export default connect(mapStateToProps, {fetchTasks})(StyledTaskList)
+export default connect(mapStateToProps, {fetchTasks, updateTasksTime, updateTasksStatus })(StyledTaskList)

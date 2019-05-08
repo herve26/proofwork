@@ -13,6 +13,7 @@ import TasksContract from "../contracts/Tasks.json";
 import { web3Connect } from '../Store/actions/web3Action';
 import { getAccount } from "../Store/actions/accountAction";
 import { getContract } from "../Store/actions/contractAction";
+import { fetchCharities } from '../Store/actions/charityAction';
 // import './App.css';
 
 
@@ -98,8 +99,8 @@ class App extends Component {
 			isCharityAddOpen: false,
 			isDrawerOpen: false,
 			tasks: [],
-			web3: null, 
-			accounts: null, 
+			web3: null,
+			accounts: null,
 			contract: null,
 			charities: [],
 			isowner: false,
@@ -107,15 +108,14 @@ class App extends Component {
 			tasks_status: status
 		}
 		this.initializeContract()
-		
+
 	}
 
 	initializeContract = async () => {
 		await this.props.web3Connect();
-		console.log(this.props.web3)
-		this.props.getAccount(this.props.web3)
-		console.log(this.props.account)
-		this.props.getContract(this.props.web3)
+		await this.props.getAccount(this.props.web3)
+		await this.props.getContract(this.props.web3)
+		this.props.fetchCharities()
 	}
 
 	getFailedList =  async () => {
@@ -156,14 +156,14 @@ class App extends Component {
 	componentDidMount = async () => {
 
 		// this.interval = setInterval(this.refreshTasks, 3000)
-		
+
 		try {
 			// Get network provider and web3 instance.
 			const web3 = await getWeb3();
-			
+
 			// Use web3 to get the user's accounts.
 			const accounts = await web3.eth.getAccounts();
-			
+
 			// Get the contract instance.
 			const networkId = await web3.eth.net.getId();
 			const deployedNetwork = TasksContract.networks[networkId];
@@ -171,7 +171,7 @@ class App extends Component {
 				TasksContract.abi,
 				deployedNetwork && deployedNetwork.address,
 			);
-				
+
 			// Set web3, accounts, and contract to the state
 			this.setState({ web3, accounts, contract: instance }, this.fetchTasks);
 			this.checkOwner()
@@ -186,7 +186,7 @@ class App extends Component {
 				console.error(error);
 			}
 		};
-	
+
 	fetchTasks = async () => {
 		const { accounts, contract, web3 } = this.state;
 		let taskCount = parseInt(await contract.methods.Pledgers(accounts[0]).call({from: accounts[0]}))
@@ -222,7 +222,7 @@ class App extends Component {
 				rebuildReport = true;
 				task.status = Status_map[2]
 				task.time_percent = 0;
-				return task;	
+				return task;
 			}
 
 			task.time_percent = timeDiff(task.time_start, task.time_limit)
@@ -257,7 +257,7 @@ class App extends Component {
 		const { accounts, contract, web3 } = this.state;
 		let charitiesLen = parseInt(await contract.methods.getCharitiesLength().call())
 		let charities = []
-		
+
 		for (let index = 0; index < charitiesLen; index++) {
 			charities.push(await contract.methods.getCharity(index).call())
 		}
@@ -291,30 +291,30 @@ class App extends Component {
 		const account = accounts ? accounts[0] : accounts
 		const fabShow = {0:true, 1: false, 2: this.state.isowner}
 		const isAddress = this.state.web3 ? this.state.web3.utils.isAddress : null
-		const asStatus = (tasks_status.completed > 0 || tasks_status.failed > 0 || tasks_status.pending > 0) ? true : false;  
+		const asStatus = (tasks_status.completed > 0 || tasks_status.failed > 0 || tasks_status.pending > 0) ? true : false;
 		return (
 			<Grid className={classes.root}>
 				<Header address={account} openCharity={this.handleCharityOpen} />
 				<main className={classes.main}>
-				{asStatus > 0 && <ReportView status={this.state.tasks_status} />}
-					<TasksList 
-						tasklist={this.state.tasks} 
-						charities={this.state.charities} 
+				<ReportView />
+					<TasksList
+						tasklist={this.state.tasks}
+						charities={this.state.charities}
 						isAddTaskOpen={this.state.isAddTaskOpen}
-						handleCloseAdd={this.handleAddTask} 
+						handleCloseAdd={this.handleAddTask}
 						handleOpenAdd={this.handleAdd}
 						handleTaskCompleted={this.handleTaskCompleted}
 						className={classes.tasksView}
 					/>
 				</main>
-				<CharityView 
-					charities={this.state.charities} 
-					openAdd={this.state.isCharityAddOpen} 
+				<CharityView
+					charities={this.state.charities}
+					openAdd={this.state.isCharityAddOpen}
 					handleCharityAdd={this.handleCharityAdd}
 					isAddress={isAddress}
 					isowner={this.state.isowner}
 					tasksToPay={this.state.topayTask.userid.length}
-					handlePayToCharity={this.handlePayCharity} 
+					handlePayToCharity={this.handlePayCharity}
 					handleClose={this.handleCharityClose}
 				/>
 			</Grid>
@@ -347,7 +347,7 @@ class App extends Component {
 			console.log(rcp)
 			this.fetchTasks()
 		})
-		
+
 	}
 
 	handleMenu = () => {
@@ -366,7 +366,7 @@ class App extends Component {
 		}
 		// this.setState({isCharityAddOpen: false})
 	}
-	
+
 	handleCharityOpen = () => {
 		console.log('open')
 		this.setState({isCharityAddOpen: true})
@@ -419,6 +419,6 @@ const mapDispatchToProps = (dispatch) => ({
 	web3Connect: dispatch(web3Connect),
 	getAccount: web3 => getAccount(web3)
 })
-// const ConnectedApp = connect(null, { web3Connect })(App); 
+// const ConnectedApp = connect(null, { web3Connect })(App);
 
-export default connect(mapStateToProps, {web3Connect, getAccount, getContract })(withStyles(styles)(App));
+export default connect(mapStateToProps, {web3Connect, getAccount, getContract, fetchCharities })(withStyles(styles)(App));

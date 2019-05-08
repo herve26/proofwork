@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
+import { connect } from "react-redux";
 import { withStyles } from "@material-ui/core";
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
+import { addCharity } from '../../Store/actions/charityAction';
+
+
 const styles = themes => ({
     root: {
         color: 'red'
@@ -57,28 +61,21 @@ class AddCharity extends Component {
     }
 
     handleCloseAdd = () =>{
-        console.log('close charity add')
         if(this.isValidInput(this.state)){
-            this.props.handleCharityAdd(this.state)
-            this.emptyState()
+            this.props.addCharity(this.state)
+            this.setState({name: '', address: ''})
         }
     }
 
-    handleCloseCancel = () => {
-        console.log('close charity cancel')
-        this.props.handleCharityAdd()
-        this.emptyState()
-    }
-
-    emptyState = () => {
-        this.setState({name: '', address: ''})
-    }
-
     isValidInput = (charity) => {
-        if(charity.name && this.props.isAddress(charity.address))
+        if(charity.name && this.props.web3.utils.isAddress(charity.address))
             return true
         return false
     }
 }
 
-export default withStyles(styles)(AddCharity);
+const mapStateToProps = state => ({
+    web3: state.web3.instance
+})
+
+export default connect(mapStateToProps, { addCharity })(withStyles(styles)(AddCharity));

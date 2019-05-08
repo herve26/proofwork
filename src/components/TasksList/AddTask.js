@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core';
 import withMobileDialog from '@material-ui/core/withMobileDialog';
 import Dialog from '@material-ui/core/Dialog';
@@ -11,6 +12,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import PropTypes from 'prop-types';
 import toUnixTime from '../../utils/toUnixTime';
 import timeDiff from '../../utils/timeDiff';
+import { new_task } from "../../Store/actions/tasksAction";
+import Status_map from '../../utils/statusMap';
 
 const styles = theme => ({
     root:{
@@ -156,11 +159,13 @@ class AddTask extends Component{
             pledge_amount: this.state.pledge_amount,
             time_start: time_now,
             time_percent: timeDiff(time_now, time_limit),
-            charity: this.state.charity
+            charity: this.state.charity,
+            status: Status_map[0]
 
         }
         this.emptyState()
-        this.props.close(task)
+        this.props.new_task(task)
+        this.props.close();
     }
 
     handleCloseCancel = () => {
@@ -177,4 +182,4 @@ class AddTask extends Component{
     }
 }
 
-export default withStyles(styles)(withMobileDialog()(AddTask));
+export default connect(null, { new_task })(withStyles(styles)(withMobileDialog()(AddTask)));
